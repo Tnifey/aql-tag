@@ -10,7 +10,7 @@ To work with AQL Queries anywhere.
 ## 🥑 Usage
 
 ```ts
-import { aql } from "https://raw.githubusercontent.com/Tnifey/aql-tag/develop/src/mod.ts";
+import { aql } from "https://raw.githubusercontent.com/Tnifey/aql-tag/master/src/mod.ts";
 ```
 
 ### example
