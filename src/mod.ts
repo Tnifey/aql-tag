@@ -109,10 +109,13 @@ export interface ArangoCollection {
   name: string;
 }
 
-export interface GeneratedAqlQuery {
+export interface AqlQuery {
   query: string;
-  bindVars: { [name: string]: any };
-  _source: () => { strings: string[]; args: any[] };
+  bindVars: { [name: string]: any; };
+}
+
+export interface GeneratedAqlQuery extends AqlQuery {
+  _source: () => { strings: string[]; args: any[]; };
 }
 
 export interface AqlLiteral {
