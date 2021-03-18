@@ -5,7 +5,7 @@ export function aql(
   ...args: AqlValue[]
 ): GeneratedAqlQuery {
   const strings: string[] = [...templateStrings];
-  const values: Map<any, string> = new Map();
+  const values: Map<AqlValue, string> = new Map();
 
   let query: string = strings[0];
 
@@ -68,38 +68,40 @@ export function aql(
   return { query, bindVars, _source: () => ({ strings, args }) };
 }
 
-export namespace aql {
-  export function literal(value: AqlLiteralValueType): AqlLiteral {
-    if (isAqlLiteral(value)) return value;
-    return { toAQL: () => String(value ?? "") };
-  }
-
-  export function join(
-    values: AqlValue[],
-    separator: string = " ",
-  ): GeneratedAqlQuery {
-    if (!values.length) return aql``;
-    if (values.length === 1) return aql`${values}`;
-
-    return aql(
-      ["", ...Array(values.length - 1).fill(separator), ""] as any,
-      ...values,
-    );
-  }
+export function literal(value: AqlLiteralValueType): AqlLiteral {
+  if (isAqlLiteral(value)) return value;
+  return { toAQL: () => String(value ?? "") };
 }
+
+export function join(values: AqlValue[], separator = " "): GeneratedAqlQuery {
+  if (!values.length) return aql``;
+  if (values.length === 1) return aql`${values}`;
+
+  const parts = Array(values.length - 1).fill(separator);
+  const query = ["", ...parts, ""];
+  return aql((query as unknown) as TemplateStringsArray, ...values);
+}
+
+aql.literal = literal;
+aql.join = join;
 
 // Helpers
 
-export function isArangoCollection(value: any): value is ArangoCollection {
-  return Boolean(value?.isArangoCollection);
+export function isArangoCollection(value: unknown): value is ArangoCollection {
+  const isArangoCollection = value && typeof value === "object" &&
+    "isArangoCollection" in value;
+  return !!isArangoCollection;
 }
 
-export function isGeneratedAqlQuery(value: any): value is GeneratedAqlQuery {
-  return typeof value?._source === "function";
+export function isGeneratedAqlQuery(
+  value: unknown,
+): value is GeneratedAqlQuery {
+  const isGeneratedAqlQuery = typeof (value as Dict)?._source === "function";
+  return !!isGeneratedAqlQuery;
 }
 
-export function isAqlLiteral(value: any): value is AqlLiteral {
-  return typeof value?.toAQL === "function";
+export function isAqlLiteral(value: unknown): value is AqlLiteral {
+  return !!(value && typeof (value as Dict)?.toAQL === "function");
 }
 
 // Types
@@ -111,11 +113,11 @@ export interface ArangoCollection {
 
 export interface AqlQuery {
   query: string;
-  bindVars: { [name: string]: any; };
+  bindVars: { [name: string]: AqlValue };
 }
 
 export interface GeneratedAqlQuery extends AqlQuery {
-  _source: () => { strings: string[]; args: any[]; };
+  _source: () => { strings: string[]; args: AqlValue[] };
 }
 
 export interface AqlLiteral {
@@ -138,5 +140,7 @@ export type AqlValue =
   | boolean
   | null
   | undefined
-  | object
-  | any[];
+  | Record<string, unknown>
+  | AqlValue[];
+
+export type Dict<T extends unknown = unknown> = Record<string, T>;

@@ -1,7 +1,6 @@
 ## 🥑 What?
 
-AQL Template Tag Literal.
-Selfcontaing ES Module with no dependencies.
+AQL Template Tag Literal. ES Module with no dependencies.
 
 ## 🥑 Why?
 
@@ -15,7 +14,8 @@ import { aql } from "https://raw.githubusercontent.com/Tnifey/aql-tag/master/src
 
 ### example
 
-Works like [AQL Helpers](https://www.arangodb.com/docs/stable/drivers/js-reference-aql.html).
+Works like
+[AQL Helpers](https://www.arangodb.com/docs/stable/drivers/js-reference-aql.html).
 
 TL;DR
 
