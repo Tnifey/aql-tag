@@ -140,7 +140,10 @@ export type AqlValue =
   | boolean
   | null
   | undefined
-  | Record<string, unknown>
-  | AqlValue[];
+  | AqlValue[]
+  // deno-lint-ignore no-explicit-any
+  | Record<string, any>
+  // deno-lint-ignore no-explicit-any
+  | any[];
 
 export type Dict<T extends unknown = unknown> = Record<string, T>;
