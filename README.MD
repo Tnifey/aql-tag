@@ -10,6 +10,8 @@ To work with AQL Queries anywhere.
 
 ```ts
 import { aql } from "https://raw.githubusercontent.com/Tnifey/aql-tag/master/src/mod.ts";
+// or with tag
+import { aql } from "https://raw.githubusercontent.com/Tnifey/aql-tag/0.0.3/mod.ts";
 ```
 
 ### example
